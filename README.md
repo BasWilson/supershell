@@ -10,9 +10,11 @@ A tiny Go CLI to save and manage SSH connection profiles in a local JSON file.
 
 ## Install
 ```bash
-# Build and put on your PATH
-go build -o bin/supershell ./cmd/supershell
-sudo mv bin/supershell /usr/local/bin/
+# macOS/Linux (latest release)
+curl -fsSL https://raw.githubusercontent.com/BasWilson/supershell/main/scripts/install.sh | bash
+
+# Windows (PowerShell, latest release)
+powershell -ExecutionPolicy Bypass -c "iwr -useb https://raw.githubusercontent.com/BasWilson/supershell/main/scripts/install.ps1 | iex"
 ```
 
 Or with Go 1.20+ in this folder:
@@ -49,3 +51,21 @@ supershell connect --name prod
 - Passwords are stored in plain text in the JSON file. Prefer key based auth.
 - File and directory permissions default to user only (0700 dir, 0600 file).
 - The tool does not manage SSH config; it invokes your system `ssh`.
+
+## Releases
+
+GitHub Releases are built on tag push.
+
+Locally build artifacts for all platforms:
+```bash
+scripts/release_build.sh v0.1.0
+# or
+make release VERSION=v0.1.0
+```
+
+Create and push a tag to trigger CI release:
+```bash
+scripts/release_tag.sh v0.1.0
+# or
+make tag VERSION=v0.1.0
+```
