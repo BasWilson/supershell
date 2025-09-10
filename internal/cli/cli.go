@@ -201,8 +201,25 @@ func runConnect(s *store.Store, args []string) error {
 	if r.AuthMethod == "key" && r.KeyPath != "" {
 		sshArgs = append(sshArgs, "-i", r.KeyPath)
 	}
+	if r.AuthMethod == "password" {
+		sshArgs = append(sshArgs,
+			"-o", "PubkeyAuthentication=no",
+			"-o", "PreferredAuthentications=password,keyboard-interactive",
+		)
+	}
 	sshArgs = append(sshArgs, fmt.Sprintf("%s@%s", r.User, r.Host))
-	cmd := exec.Command("ssh", sshArgs...)
+
+	var cmd *exec.Cmd
+	if r.AuthMethod == "password" && r.Password != "" {
+		if _, lookErr := exec.LookPath("sshpass"); lookErr == nil {
+			passArgs := append([]string{"-p", r.Password, "ssh"}, sshArgs...)
+			cmd = exec.Command("sshpass", passArgs...)
+		} else {
+			cmd = exec.Command("ssh", sshArgs...)
+		}
+	} else {
+		cmd = exec.Command("ssh", sshArgs...)
+	}
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

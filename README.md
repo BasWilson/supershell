@@ -45,6 +45,24 @@ supershell delete --name db
 
 # Connect using saved settings
 supershell connect --name prod
+
+# Connect with password
+supershell connect --name db
+```
+
+### Password-based connections
+
+If a profile is created with `--auth password` and a `--password`, `supershell connect` will:
+- force password/keyboard-interactive auth (disables pubkey for that session)
+- use `sshpass` when available to avoid an interactive prompt; otherwise it will prompt for the password in your terminal
+
+Install `sshpass` (optional):
+```bash
+# macOS (Homebrew)
+brew install hudochenkov/sshpass/sshpass
+
+# Debian/Ubuntu (may require enabling community repos)
+sudo apt-get update && sudo apt-get install -y sshpass
 ```
 
 ## Notes
